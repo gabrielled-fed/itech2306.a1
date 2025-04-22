@@ -14,8 +14,7 @@ public class ShareRegistrySystem {
             System.out.println("\n--- Share Registry Menu ---");
             System.out.println("1. Add Company");
             System.out.println("2. List Companies");
-            // Future options:
-            // 3. Add Investor
+            System.out.println("3. Add Investor");
             // 4. Declare Dividend
             // 5. Start Vote, etc.
             System.out.println("0. Exit");
@@ -26,6 +25,7 @@ public class ShareRegistrySystem {
             switch (choice) {
                 case 1 -> addCompany();
                 case 2 -> listCompanies();
+                case 3 -> addInvestor();
                 case 0 -> System.out.println("Exiting...");
                 default -> System.out.println("Invalid option.");
             }
@@ -72,4 +72,39 @@ public class ShareRegistrySystem {
             }
         }
     }
+    
+    private void addInvestor() {
+        if (companies.isEmpty()) {
+            System.out.println("No companies exist yet.");
+            return;
+        }
+
+        listCompanies();
+        System.out.print("Enter company number to invest in: ");
+        int index = input.nextInt();
+        input.nextLine(); 
+
+        if (index < 1 || index > companies.size()) {
+            System.out.println("Invalid selection.");
+            return;
+        }
+
+        Company selected = companies.get(index - 1);
+
+        System.out.print("Enter investor's full name: ");
+        String name = input.nextLine();
+
+        System.out.print("Enter number of shares to buy: ");
+        int numShares = input.nextInt();
+        input.nextLine();
+
+        Shareholder investor = new Shareholder(name, numShares);
+
+        if (selected.addInvestor(investor)) {
+            System.out.println("Investor added successfully!");
+        } else {
+            System.out.println("Could not add investor. Check min/max/available shares.");
+        }
+    }
+
 }

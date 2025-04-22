@@ -1,5 +1,8 @@
 package itech2306.a1.GabrielleDwane;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class Company {
     private String name;
     private String founder;
@@ -8,6 +11,8 @@ public class Company {
     private float sharePrice;
     private int minShares;
     private int maxShares;
+    
+    private List<Shareholder> investors = new ArrayList<>();
 
     public Company(String name, String founder, int founderShares, int sharesAvailable,
             float sharePrice, int minShares, int maxShares) {
@@ -26,6 +31,23 @@ public class Company {
 
     public int getTotalSharesIssued() {
         return founderShares;
+    }
+    
+    public boolean addInvestor(Shareholder s) {
+        int requestedShares = s.getNumShares();
+        if (requestedShares >= minShares &&
+            requestedShares <= maxShares &&
+            requestedShares <= sharesAvailable) {
+
+            investors.add(s);
+            sharesAvailable -= requestedShares;
+            return true;
+        }
+        return false;
+    }
+
+    public List<Shareholder> getInvestors() {
+        return new ArrayList<>(investors); 
     }
 
     // add getters as needed
