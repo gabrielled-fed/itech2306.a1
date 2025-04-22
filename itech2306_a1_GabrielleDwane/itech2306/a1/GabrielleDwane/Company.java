@@ -13,6 +13,8 @@ public class Company {
     private int maxShares;
     
     private List<Shareholder> investors = new ArrayList<>();
+    
+    private String currentVoteTopic = null;
 
     public Company(String name, String founder, int founderShares, int sharesAvailable,
             float sharePrice, int minShares, int maxShares) {
@@ -49,6 +51,15 @@ public class Company {
 
     public List<Shareholder> getInvestors() {
         return new ArrayList<>(investors); 
+    }
+
+    public void startNewVote(String topic) {
+        currentVoteTopic = topic;
+        // reset vote states for shareholders here future?
+    }
+
+    public String getCurrentVoteTopic() {
+        return currentVoteTopic;
     }
 
     // add getters as needed

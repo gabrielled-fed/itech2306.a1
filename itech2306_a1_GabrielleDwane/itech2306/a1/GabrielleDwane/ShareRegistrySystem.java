@@ -18,6 +18,7 @@ public class ShareRegistrySystem {
             System.out.println("3. Add Investor");
             System.out.println("4. View Investors of Company");
             System.out.println("5. Declare Dividend");
+            System.out.println("6. Start a Vote");
             System.out.println("0. Exit");
             System.out.print("Enter choice: ");
             choice = input.nextInt();
@@ -29,6 +30,7 @@ public class ShareRegistrySystem {
                 case 3 -> addInvestor();
                 case 4 -> viewInvestors();
                 case 5 -> declareDividend();
+                case 6 -> startVote();
                 case 0 -> System.out.println("Exiting...");
                 default -> System.out.println("Invalid option.");
             }
@@ -183,5 +185,30 @@ public class ShareRegistrySystem {
         }
 
         System.out.printf("Total dividend payout: $%.2f%n", total);
+    }
+    
+    private void startVote() {
+        if (companies.isEmpty()) {
+            System.out.println("No companies exist.");
+            return;
+        }
+
+        listCompanies();
+        System.out.print("Select a company number to start a vote: ");
+        int index = input.nextInt();
+        input.nextLine();
+
+        if (index < 1 || index > companies.size()) {
+            System.out.println("Invalid selection.");
+            return;
+        }
+
+        Company selected = companies.get(index - 1);
+
+        System.out.print("Enter the topic for shareholders to vote on: ");
+        String topic = input.nextLine();
+
+        selected.startNewVote(topic);
+        System.out.println("Vote topic set: \"" + topic + "\"");
     }
 }
