@@ -2,6 +2,7 @@ package itech2306.a1.GabrielleDwane;
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ShareRegistrySystem {
     private ArrayList<Company> companies = new ArrayList<>();
@@ -15,8 +16,8 @@ public class ShareRegistrySystem {
             System.out.println("1. Add Company");
             System.out.println("2. List Companies");
             System.out.println("3. Add Investor");
-            // 4. Declare Dividend
-            // 5. Start Vote, etc.
+            System.out.println("4. View Investors of Company");
+            System.out.println("5. Declare Dividend");
             System.out.println("0. Exit");
             System.out.print("Enter choice: ");
             choice = input.nextInt();
@@ -26,6 +27,8 @@ public class ShareRegistrySystem {
                 case 1 -> addCompany();
                 case 2 -> listCompanies();
                 case 3 -> addInvestor();
+                case 4 -> viewInvestors();
+                case 5 -> declareDividend();
                 case 0 -> System.out.println("Exiting...");
                 default -> System.out.println("Invalid option.");
             }
@@ -106,5 +109,79 @@ public class ShareRegistrySystem {
             System.out.println("Could not add investor. Check min/max/available shares.");
         }
     }
+    
+    private void viewInvestors() {
+        if (companies.isEmpty()) {
+            System.out.println("No companies yet.");
+            return;
+        }
 
+        listCompanies();
+        System.out.print("Select a company number to view its investors: ");
+        int index = input.nextInt();
+        input.nextLine();
+
+        if (index < 1 || index > companies.size()) {
+            System.out.println("Invalid selection.");
+            return;
+        }
+
+        Company selected = companies.get(index - 1);
+        List<Shareholder> investors = selected.getInvestors();
+
+        if (investors.isEmpty()) {
+            System.out.println("This company has no investors.");
+            return;
+        }
+
+        int totalShares = selected.getTotalSharesIssued();
+
+        System.out.println("Investors for: " + selected.getName());
+        for (int i = 0; i < investors.size(); i++) {
+            Shareholder s = investors.get(i);
+            double percentage = 100.0 * s.getNumShares() / totalShares;
+            System.out.printf("%d. %s [%d shares, %.1f%%]%n",
+                              i + 1, s.getName(), s.getNumShares(), percentage);
+        }
+        System.out.println("Total shares issued: " + totalShares);
+    }
+    
+    private void declareDividend() {
+        if (companies.isEmpty()) {
+            System.out.println("No companies available.");
+            return;
+        }
+
+        listCompanies();
+        System.out.print("Select a company number to declare a dividend: ");
+        int index = input.nextInt();
+        input.nextLine();
+
+        if (index < 1 || index > companies.size()) {
+            System.out.println("Invalid selection.");
+            return;
+        }
+
+        Company selected = companies.get(index - 1);
+        List<Shareholder> investors = selected.getInvestors();
+
+        if (investors.isEmpty()) {
+            System.out.println("This company has no investors.");
+            return;
+        }
+
+        System.out.print("Enter dividend per share (e.g., 0.25): ");
+        float dividendPerShare = input.nextFloat();
+        input.nextLine();
+
+        float total = 0;
+        System.out.println("Dividend payouts:");
+        for (Shareholder s : investors) {
+            float payout = s.getNumShares() * dividendPerShare;
+            total += payout;
+            System.out.printf("• %s: $%.2f%n", s.getName(), payout);
+        }
+
+        System.out.printf("Total dividend payout: $%.2f%n", total);
+    }
 }

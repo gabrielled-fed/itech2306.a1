@@ -30,7 +30,8 @@ public class Company {
     }
 
     public int getTotalSharesIssued() {
-        return founderShares;
+        int investorTotal = investors.stream().mapToInt(Shareholder::getNumShares).sum();
+        return founderShares + investorTotal;
     }
     
     public boolean addInvestor(Shareholder s) {
