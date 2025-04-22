@@ -36,20 +36,39 @@ public class ShareRegistrySystem {
         System.out.print("Enter company name: ");
         String name = input.nextLine();
 
-        // add: prompt for founder name, share price, min/max shares
-        Company c = new Company(name);
-        companies.add(c);
+        System.out.print("Enter founder's name: ");
+        String founder = input.nextLine();
 
-        System.out.println("Company added.");
+        System.out.print("How many shares are issued to the founder? ");
+        int founderShares = input.nextInt();
+
+        System.out.print("How many additional shares can be issued to others? ");
+        int sharesAvailable = input.nextInt();
+
+        System.out.print("What is the share price? ");
+        float sharePrice = input.nextFloat();
+
+        System.out.print("What is the minimum shares per investor? ");
+        int minShares = input.nextInt();
+
+        System.out.print("What is the maximum shares per investor? ");
+        int maxShares = input.nextInt();
+        input.nextLine(); // clear buffer
+
+        Company company = new Company(name, founder, founderShares, sharesAvailable, sharePrice, minShares, maxShares);
+        companies.add(company);
+
+        System.out.println("Company added successfully!");
     }
 
     private void listCompanies() {
         if (companies.isEmpty()) {
             System.out.println("No companies yet.");
         } else {
-            for (Company c : companies) {
-                System.out.println("- " + c.getName());
-                // add: show # of shares, founder, etc.
+            for (int i = 0; i < companies.size(); i++) {
+                Company c = companies.get(i);
+                System.out.println((i + 1) + ". " + c.getName() +
+                                   " [" + c.getTotalSharesIssued() + " shares issued]");
             }
         }
     }
