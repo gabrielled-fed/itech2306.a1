@@ -15,9 +15,7 @@ public class CompanyDatabase {
                 return c;
             }
         }
-        return null; // Not found
+        return null; 
     }
-
-    // add: removeCompany(), listCompanies(), save/load if needed
 }
 

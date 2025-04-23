@@ -6,7 +6,6 @@ import java.util.ArrayList;
 public class Company {
     private String name;
     private String founder;
-    private int founderShares;
     private int sharesAvailable;
     private float sharePrice;
     private int minShares;
@@ -20,7 +19,6 @@ public class Company {
             float sharePrice, int minShares, int maxShares) {
  this.name = name;
  this.founder = founder;
- this.founderShares = founderShares;
  this.sharesAvailable = sharesAvailable;
  this.sharePrice = sharePrice;
  this.minShares = minShares;
@@ -32,8 +30,11 @@ public class Company {
     }
 
     public int getTotalSharesIssued() {
-        int investorTotal = investors.stream().mapToInt(Shareholder::getNumShares).sum();
-        return founderShares + investorTotal;
+        return investors.stream().mapToInt(Shareholder::getNumShares).sum();
+    }
+    
+    public void addFounder(Shareholder s) {
+        investors.add(s); // no share limits - founders
     }
     
     public boolean addInvestor(Shareholder s) {
@@ -64,5 +65,31 @@ public class Company {
         return currentVoteTopic;
     }
 
-    // add getters as needed
+    public void endCurrentVote() {
+        int yesCount = 0;
+        int noCount = 0;
+
+        System.out.println("Vote Results for topic: " + currentVoteTopic);
+        for (Shareholder s : investors) {
+            if (s.hasVoted()) {
+                String result = s.votedYes() ? "YES" : "NO";
+                System.out.println("- " + s.getName() + ": " + result);
+                if (s.votedYes()) yesCount += s.getNumShares();
+                else noCount += s.getNumShares();
+            }
+        }
+
+        System.out.println("Total YES votes (by shares): " + yesCount);
+        System.out.println("Total NO votes (by shares): " + noCount);
+
+        currentVoteTopic = null;
+    }
+    
+    public String getFounder() {
+        return founder;
+    }
+
+    public float getSharePrice() {
+        return sharePrice;
+    }
 }

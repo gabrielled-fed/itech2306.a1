@@ -20,6 +20,8 @@ public class ShareRegistrySystem {
             System.out.println("5. Declare Dividend");
             System.out.println("6. Start a Vote");
             System.out.println("7. Record Shareholder Vote");
+            System.out.println("8. End Vote and Show Results");
+            System.out.println("9. View Full Company Report");
             System.out.println("0. Exit");
             System.out.print("Enter choice: ");
             choice = input.nextInt();
@@ -33,6 +35,8 @@ public class ShareRegistrySystem {
                 case 5 -> declareDividend();
                 case 6 -> startVote();
                 case 7 -> recordVote();
+                case 8 -> endVote();
+                case 9 -> viewCompanyReport();
                 case 0 -> System.out.println("Exiting...");
                 default -> System.out.println("Invalid option.");
             }
@@ -63,6 +67,10 @@ public class ShareRegistrySystem {
         input.nextLine(); // clear buffer
 
         Company company = new Company(name, founder, founderShares, sharesAvailable, sharePrice, minShares, maxShares);
+
+        Shareholder founderInvestor = new Shareholder(founder, founderShares);
+        company.addFounder(founderInvestor);
+
         companies.add(company);
 
         System.out.println("Company added successfully!");
@@ -279,6 +287,68 @@ public class ShareRegistrySystem {
             System.out.println("Vote recorded: NO");
         } else {
             System.out.println("Invalid vote input.");
+        }
+    }
+    
+    private void endVote() {
+        if (companies.isEmpty()) {
+            System.out.println("No companies available.");
+            return;
+        }
+
+        listCompanies();
+        System.out.print("Select a company number: ");
+        int index = input.nextInt();
+        input.nextLine();
+
+        if (index < 1 || index > companies.size()) {
+            System.out.println("Invalid selection.");
+            return;
+        }
+
+        Company selected = companies.get(index - 1);
+        if (selected.getCurrentVoteTopic() == null) {
+            System.out.println("No active vote to end.");
+            return;
+        }
+
+        selected.endCurrentVote();  
+    }
+    
+    private void viewCompanyReport() {
+        if (companies.isEmpty()) {
+            System.out.println("No companies available.");
+            return;
+        }
+
+        listCompanies();
+        System.out.print("Select a company number to view report: ");
+        int index = input.nextInt();
+        input.nextLine();
+
+        if (index < 1 || index > companies.size()) {
+            System.out.println("Invalid selection.");
+            return;
+        }
+
+        Company selected = companies.get(index - 1);
+        int totalShares = selected.getTotalSharesIssued();
+        List<Shareholder> investors = selected.getInvestors();
+
+        System.out.println("\n--- Company Report: " + selected.getName() + " ---");
+        System.out.println("Founder: " + selected.getFounder());
+        System.out.println("Share Price: $" + selected.getSharePrice());
+        System.out.println("Total Shares Issued: " + totalShares);
+
+        if (investors.isEmpty()) {
+            System.out.println("No investors yet.");
+        } else {
+            System.out.println("Shareholders:");
+            for (Shareholder s : investors) {
+                int shares = s.getNumShares();
+                double percent = 100.0 * shares / totalShares;
+                System.out.printf("- %s: %d shares (%.2f%%)%n", s.getName(), shares, percent);
+            }
         }
     }
 }
