@@ -55,7 +55,9 @@ public class Company {
 
     public void startNewVote(String topic) {
         currentVoteTopic = topic;
-        // reset vote states for shareholders here future?
+        for (Shareholder s : investors) {
+            s.resetVote(); // Clear previous vote state
+        }
     }
 
     public String getCurrentVoteTopic() {

@@ -19,6 +19,7 @@ public class ShareRegistrySystem {
             System.out.println("4. View Investors of Company");
             System.out.println("5. Declare Dividend");
             System.out.println("6. Start a Vote");
+            System.out.println("7. Record Shareholder Vote");
             System.out.println("0. Exit");
             System.out.print("Enter choice: ");
             choice = input.nextInt();
@@ -31,6 +32,7 @@ public class ShareRegistrySystem {
                 case 4 -> viewInvestors();
                 case 5 -> declareDividend();
                 case 6 -> startVote();
+                case 7 -> recordVote();
                 case 0 -> System.out.println("Exiting...");
                 default -> System.out.println("Invalid option.");
             }
@@ -210,5 +212,73 @@ public class ShareRegistrySystem {
 
         selected.startNewVote(topic);
         System.out.println("Vote topic set: \"" + topic + "\"");
+    }
+    private void recordVote() {
+        if (companies.isEmpty()) {
+            System.out.println("No companies available.");
+            return;
+        }
+
+        listCompanies();
+        System.out.print("Select a company number: ");
+        int index = input.nextInt();
+        input.nextLine();
+
+        if (index < 1 || index > companies.size()) {
+            System.out.println("Invalid company.");
+            return;
+        }
+
+        Company selected = companies.get(index - 1);
+        String topic = selected.getCurrentVoteTopic();
+
+        if (topic == null) {
+            System.out.println("No vote topic is currently set for this company.");
+            return;
+        }
+
+        List<Shareholder> investors = selected.getInvestors();
+
+        if (investors.isEmpty()) {
+            System.out.println("No shareholders to vote.");
+            return;
+        }
+
+        System.out.println("Vote topic: " + topic);
+
+        for (int i = 0; i < investors.size(); i++) {
+            Shareholder s = investors.get(i);
+            System.out.println((i + 1) + ". " + s.getName() +
+                    (s.hasVoted() ? " (Already Voted)" : ""));
+        }
+
+        System.out.print("Choose a shareholder number to vote: ");
+        int sIndex = input.nextInt();
+        input.nextLine();
+
+        if (sIndex < 1 || sIndex > investors.size()) {
+            System.out.println("Invalid shareholder.");
+            return;
+        }
+
+        Shareholder voter = investors.get(sIndex - 1);
+
+        if (voter.hasVoted()) {
+            System.out.println("This shareholder has already voted.");
+            return;
+        }
+
+        System.out.print("Vote yes or no? (y/n): ");
+        String vote = input.nextLine().trim().toLowerCase();
+
+        if (vote.equals("y")) {
+            voter.vote(true);
+            System.out.println("Vote recorded: YES");
+        } else if (vote.equals("n")) {
+            voter.vote(false);
+            System.out.println("Vote recorded: NO");
+        } else {
+            System.out.println("Invalid vote input.");
+        }
     }
 }
