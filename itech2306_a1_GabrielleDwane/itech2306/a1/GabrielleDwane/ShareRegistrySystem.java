@@ -1,11 +1,16 @@
 package itech2306.a1.GabrielleDwane;
 
 import java.util.Scanner;
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Acts as the controller for user interaction.
+ * Displays the menu, processes user input, and coordinates actions
+ * like creating companies, adding investors, handling votes, and showing reports.
+ */
+
 public class ShareRegistrySystem {
-    private ArrayList<Company> companies = new ArrayList<>();
+	private CompanyDatabase database = new CompanyDatabase(); // Handles data storage/retrieval
     private Scanner input = new Scanner(System.in);
 
     // Main program loop
@@ -25,8 +30,9 @@ public class ShareRegistrySystem {
             System.out.println("0. Exit");
             System.out.print("Enter choice: ");
             choice = input.nextInt();
-            input.nextLine(); // Clear newline from buffer
+            input.nextLine(); 
 
+            // Menu dispatch
             switch (choice) {
                 case 1 -> addCompany();
                 case 2 -> listCompanies();
@@ -43,6 +49,7 @@ public class ShareRegistrySystem {
         } while (choice != 0);
     }
 
+    // COMPANY
     private void addCompany() {
         System.out.print("Enter company name: ");
         String name = input.nextLine();
@@ -64,19 +71,19 @@ public class ShareRegistrySystem {
 
         System.out.print("What is the maximum shares per investor? ");
         int maxShares = input.nextInt();
-        input.nextLine(); // clear buffer
+        input.nextLine(); 
 
         Company company = new Company(name, founder, founderShares, sharesAvailable, sharePrice, minShares, maxShares);
 
         Shareholder founderInvestor = new Shareholder(founder, founderShares);
         company.addFounder(founderInvestor);
 
-        companies.add(company);
-
+        database.addCompany(company);
         System.out.println("Company added successfully!");
     }
 
     private void listCompanies() {
+    	List<Company> companies = database.getAllCompanies();
         if (companies.isEmpty()) {
             System.out.println("No companies yet.");
         } else {
@@ -88,7 +95,9 @@ public class ShareRegistrySystem {
         }
     }
     
+    // INVESTORS
     private void addInvestor() {
+    	List<Company> companies = database.getAllCompanies();
         if (companies.isEmpty()) {
             System.out.println("No companies exist yet.");
             return;
@@ -123,6 +132,7 @@ public class ShareRegistrySystem {
     }
     
     private void viewInvestors() {
+    	List<Company> companies = database.getAllCompanies();
         if (companies.isEmpty()) {
             System.out.println("No companies yet.");
             return;
@@ -159,6 +169,7 @@ public class ShareRegistrySystem {
     }
     
     private void declareDividend() {
+    	List<Company> companies = database.getAllCompanies();
         if (companies.isEmpty()) {
             System.out.println("No companies available.");
             return;
@@ -197,7 +208,9 @@ public class ShareRegistrySystem {
         System.out.printf("Total dividend payout: $%.2f%n", total);
     }
     
+    // VOTING BELOW 
     private void startVote() {
+    	List<Company> companies = database.getAllCompanies();
         if (companies.isEmpty()) {
             System.out.println("No companies exist.");
             return;
@@ -221,7 +234,9 @@ public class ShareRegistrySystem {
         selected.startNewVote(topic);
         System.out.println("Vote topic set: \"" + topic + "\"");
     }
+    
     private void recordVote() {
+    	List<Company> companies = database.getAllCompanies();
         if (companies.isEmpty()) {
             System.out.println("No companies available.");
             return;
@@ -291,6 +306,7 @@ public class ShareRegistrySystem {
     }
     
     private void endVote() {
+    	List<Company> companies = database.getAllCompanies();
         if (companies.isEmpty()) {
             System.out.println("No companies available.");
             return;
@@ -315,7 +331,9 @@ public class ShareRegistrySystem {
         selected.endCurrentVote();  
     }
     
+    // COMPANY REPORT
     private void viewCompanyReport() {
+    	List<Company> companies = database.getAllCompanies();
         if (companies.isEmpty()) {
             System.out.println("No companies available.");
             return;

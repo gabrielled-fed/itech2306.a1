@@ -3,6 +3,13 @@ package itech2306.a1.GabrielleDwane;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Represents a Company in the share registry system.
+ * Stores information about its name, founder, share limits, investors,
+ * and any current voting activity. Includes methods to manage investors,
+ * voting, and reporting.
+ */
+
 public class Company {
     private String name;
     private String founder;
@@ -15,6 +22,9 @@ public class Company {
     
     private String currentVoteTopic = null;
 
+    /**
+     * Constructs a new Company with all relevant attributes.
+     */
     public Company(String name, String founder, int founderShares, int sharesAvailable,
             float sharePrice, int minShares, int maxShares) {
  this.name = name;
@@ -34,11 +44,13 @@ public class Company {
     }
     
     public void addFounder(Shareholder s) {
-        investors.add(s); // no share limits - founders
+        investors.add(s); // Founder bypasses min/max share limits
     }
     
     public boolean addInvestor(Shareholder s) {
         int requestedShares = s.getNumShares();
+        
+     // Must meet company rules and not exceed available shares
         if (requestedShares >= minShares &&
             requestedShares <= maxShares &&
             requestedShares <= sharesAvailable) {
@@ -56,8 +68,10 @@ public class Company {
 
     public void startNewVote(String topic) {
         currentVoteTopic = topic;
+        
+     // Reset vote state before new vote begins
         for (Shareholder s : investors) {
-            s.resetVote(); // Clear previous vote state
+            s.resetVote();
         }
     }
 
@@ -82,7 +96,7 @@ public class Company {
         System.out.println("Total YES votes (by shares): " + yesCount);
         System.out.println("Total NO votes (by shares): " + noCount);
 
-        currentVoteTopic = null;
+        currentVoteTopic = null; // Clear vote after reporting
     }
     
     public String getFounder() {
